@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Andrew's Age",
+            "name": "1994 7 1",
             "type": "python",
             "request": "launch",
             "program": "age.py",
@@ -13,12 +13,28 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Future",
+            "name": "2050 07 01",
             "type": "python",
             "request": "launch",
             "program": "age.py",
-            "args": ["2050", "7", "1"],
+            "args": ["2050", "07", "01"],
             "console": "integratedTerminal"
-        }
+        },
+        {
+            "name": "1994",
+            "type": "python",
+            "request": "launch",
+            "program": "age.py",
+            "args": ["1994"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "94",
+            "type": "python",
+            "request": "launch",
+            "program": "age.py",
+            "args": ["94"],
+            "console": "integratedTerminal"
+        },
     ]
 }
