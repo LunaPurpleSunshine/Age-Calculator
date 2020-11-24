@@ -12,11 +12,25 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser .add_argument("birthdate", nargs=3, help="the birth date of the person to be aged. YYYY MM DD")
+    parser .add_argument("year", nargs=1, help="Required. The birth year of the person to be aged. YYYY or YY (assumes 19XX)")
+    parser .add_argument("month", nargs="?", default="01", const="01", help="Optional (Default 01). The birth month of the person to be aged. MM")
+    parser .add_argument("day", nargs="?", default="01", const="01", help="Optional (Default 01). The birth day of the person to be aged. DD")
 
     args = parser.parse_args()
 
-    birthday = date(int(args.birthdate[0]), int(args.birthdate[1]), int(args.birthdate[2]))
+    year = args.year[0]
+    
+    if len(year) == 2:
+        year = int("19" + year)
+    elif len(year) == 4:
+        year = int(year)
+    else:
+        raise ValueError
+
+    month = int(args.month)
+    day = int(args.day)
+
+    birthday = date(int(year), month, day)
 
     age = calculate_age(birthDate=birthday)
 
