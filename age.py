@@ -2,6 +2,16 @@ import argparse
 from datetime import date
 
 
+def expand_year(yy: int) -> int:
+    #  Return 20XX if year is possible in 2000s
+    #  Return 19XX if year is not possible in 2000s
+    this_year_index = date.today().year % 100
+    if yy > this_year_index:
+        return 1900 + yy
+    else:
+        return 2000 + yy
+
+
 def calculate_age(birthDate: date) -> int:
     "Returns int age based on given birth date."
     today = date.today()
@@ -34,7 +44,7 @@ if __name__ == "__main__":
 
     parser.add_argument("year",
                         nargs=1,
-                        help="Required. The birth year of the person to be aged. YYYY or YY (assumes 19XX)")
+                        help="Required. The birth year of the person to be aged. YYYY or YY (assumes 19XX if not possible in 2000s)")
     parser.add_argument("month",
                         nargs="?",
                         default="01",
@@ -51,7 +61,7 @@ if __name__ == "__main__":
     year = args.year[0]
 
     if len(year) == 2:
-        year = int("19" + year)
+        year = expand_year(int(year))
     elif len(year) == 4:
         year = int(year)
     else:
@@ -63,10 +73,11 @@ if __name__ == "__main__":
     birthday = date(int(year), month, day)
 
     age = calculate_age(birthDate=birthday)
-    next_birthday = calculate_next_birthday(birthDate=birthday)
 
     if age >= 0:
         print(f"{age} years old today {date.today()}")
+
+        next_birthday = calculate_next_birthday(birthDate=birthday)
 
         if next_birthday == date.today():
             print(f"Turned {age} today!")
