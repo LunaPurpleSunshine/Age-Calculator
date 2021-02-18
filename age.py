@@ -67,10 +67,11 @@ if __name__ == "__main__":
 
     if age >= 0:
         print(f"{age} years old today {date.today()}")
+
+        if next_birthday == date.today():
+            print(f"Turned {age} today!")
+        else:
+            print(f"Will turn {age + 1} on next birthday {next_birthday}")
+
     else:
         print(f"{abs(age)} years in the future")
-
-    if next_birthday == date.today():
-        print(f"Turned {age} today!")
-    else:
-        print(f"Will turn {age + 1} on next birthday {next_birthday}")
