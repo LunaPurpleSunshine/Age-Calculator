@@ -1,0 +1,18 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Export to Path",
+            "type": "shell",
+            "windows":{
+                "command": "Copy-Item -Path age.py -Destination C:\\Python\\Python39\\Scripts\\age.py",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
