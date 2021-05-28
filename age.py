@@ -43,7 +43,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("year",
-                        nargs=1,
                         help="Required. The birth year of the person to be aged. YYYY or YY (assumes 19XX if not possible in 2000s)")
     parser.add_argument("month",
                         nargs="?",
