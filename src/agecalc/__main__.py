@@ -2,4 +2,4 @@
 
 from agecalc.cli import main
 
-raise SystemExit(main())
+main()
