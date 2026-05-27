@@ -24,7 +24,9 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Topic :: Utilities",
 ]
-dependencies = []
+dependencies = [
+    "whenever>=0.10.0",
+]
 
 [project.scripts]
 agecalc = "agecalc.cli:main"

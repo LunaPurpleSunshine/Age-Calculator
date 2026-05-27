@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import argparse
-from datetime import date
+
+from whenever import Date
 
 from agecalc.core import calculate_age, calculate_next_birthday, expand_year
 
@@ -50,16 +51,17 @@ def main(argv: list[str] | None = None) -> int:
     try:
         month = int(args.month)
         day = int(args.day)
-        birthday = date(year, month, day)
+        birthday = Date(year, month, day)
     except ValueError as exc:
         parser.error(f"invalid date {args.year}-{args.month}-{args.day}: {exc}")
 
     age = calculate_age(birth_date=birthday)
+    today = Date.today_in_system_tz()
 
     if age >= 0:
-        print(f"{age} years old today {date.today()}")
+        print(f"{age} years old today {today}")
         next_birthday = calculate_next_birthday(birth_date=birthday)
-        if next_birthday == date.today():
+        if next_birthday == today:
             print(f"Turned {age} today!")
         else:
             print(f"Will turn {age + 1} on next birthday {next_birthday}")
