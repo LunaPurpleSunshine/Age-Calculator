@@ -30,11 +30,23 @@ def calculate_age(birth_date: date) -> int:
     )
 
 
+def _birthday_in_year(year: int, birth_date: date) -> date:
+    """Return the birthday in ``year``, mapping Feb 29 to Feb 28 in non-leap years."""
+    try:
+        return date(year, birth_date.month, birth_date.day)
+    except ValueError:
+        # Only Feb 29 in a non-leap year can hit this with a valid birth_date.
+        return date(year, 2, 28)
+
+
 def calculate_next_birthday(birth_date: date) -> date:
-    """Return the date of the next birthday, or today if it falls today."""
+    """Return the date of the next birthday, or today if it falls today.
+
+    For Feb 29 birthdays, non-leap years use Feb 28.
+    """
     today = date.today()
-    current_year_bday = date(today.year, birth_date.month, birth_date.day)
+    current_year_bday = _birthday_in_year(today.year, birth_date)
 
     if current_year_bday < today:
-        return date(today.year + 1, birth_date.month, birth_date.day)
+        return _birthday_in_year(today.year + 1, birth_date)
     return current_year_bday

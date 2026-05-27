@@ -6,12 +6,23 @@ from collections.abc import Callable
 from datetime import date
 
 import pytest
-from hypothesis import assume, given
+from hypothesis import given
 from hypothesis import strategies as st
 
 from agecalc.core import calculate_age, calculate_next_birthday, expand_year
 
 FreezeToday = Callable[[date], None]
+
+
+def _is_leap(year: int) -> bool:
+    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+
+
+def _birthday_in_year_for_test(year: int, birth: date) -> date:
+    """Mirror of ``core._birthday_in_year`` for use in property assertions."""
+    if birth.month == 2 and birth.day == 29 and not _is_leap(year):
+        return date(year, 2, 28)
+    return date(year, birth.month, birth.day)
 
 
 # ---------------------------------------------------------------------------
@@ -150,15 +161,32 @@ def test_next_birthday_already_passed_rolls_to_next_year(freeze_today: FreezeTod
     assert calculate_next_birthday(date(1990, 3, 10)) == date(2026, 3, 10)
 
 
+def test_next_birthday_feb_29_in_leap_year(freeze_today: FreezeToday) -> None:
+    # 2024 is a leap year and Feb 29 is still ahead.
+    freeze_today(date(2024, 1, 15))
+    assert calculate_next_birthday(date(2000, 2, 29)) == date(2024, 2, 29)
+
+
+def test_next_birthday_feb_29_in_non_leap_year_falls_to_feb_28(
+    freeze_today: FreezeToday,
+) -> None:
+    freeze_today(date(2025, 1, 15))
+    assert calculate_next_birthday(date(2000, 2, 29)) == date(2025, 2, 28)
+
+
+def test_next_birthday_feb_29_after_feb_in_non_leap_year_rolls_to_next_year(
+    freeze_today: FreezeToday,
+) -> None:
+    # March 1 2025 (non-leap): we already passed Feb 28, so next birthday is Feb 28 2026.
+    freeze_today(date(2025, 3, 1))
+    assert calculate_next_birthday(date(2000, 2, 29)) == date(2026, 2, 28)
+
+
 @given(
     today=st.dates(min_value=date(1950, 1, 1), max_value=date(2099, 12, 31)),
     birth=st.dates(min_value=date(1900, 1, 1), max_value=date(2099, 12, 31)),
 )
 def test_next_birthday_properties(today: date, birth: date) -> None:
-    # Skip leap-day birthdays — calculate_next_birthday does not handle the
-    # Feb 29 → Feb 28/Mar 1 rollover, which is outside the scope of this test.
-    assume(not (birth.month == 2 and birth.day == 29))
-
     class FrozenDate(date):
         @classmethod
         def today(cls) -> date:
@@ -174,12 +202,16 @@ def test_next_birthday_properties(today: date, birth: date) -> None:
         _core.date = original_date  # type: ignore[misc]
 
     assert result >= today
-    assert (result.month, result.day) == (birth.month, birth.day)
     assert result.year in {today.year, today.year + 1}
-    # The result must be the smallest date >= today whose (month, day) matches.
+    is_leap_day = birth.month == 2 and birth.day == 29
+    if is_leap_day and not _is_leap(result.year):
+        assert (result.month, result.day) == (2, 28)
+    else:
+        assert (result.month, result.day) == (birth.month, birth.day)
+    # The result must be the earliest birthday-in-year that is >= today.
     candidates = [
-        date(today.year, birth.month, birth.day),
-        date(today.year + 1, birth.month, birth.day),
+        _birthday_in_year_for_test(today.year, birth),
+        _birthday_in_year_for_test(today.year + 1, birth),
     ]
     earliest = min(c for c in candidates if c >= today)
     assert result == earliest
