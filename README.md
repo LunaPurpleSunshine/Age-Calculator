@@ -89,6 +89,16 @@ uv run mypy
 uv build
 ```
 
+### Pre-commit hooks
+
+This repo ships a `.pre-commit-config.yaml` that runs `ruff` lint + format on commit. Use [prek](https://prek.j178.dev/) (a fast, drop-in replacement for `pre-commit`):
+
+```bash
+uv tool install prek
+prek install            # install the git hook in this clone
+prek run --all-files    # run all hooks against the whole repo
+```
+
 CI runs the same checks across Python 3.12, 3.13, and 3.14 on every push and pull request.
 
 ## License
