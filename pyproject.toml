@@ -25,6 +25,7 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
+    "click>=8.4.1",
     "whenever>=0.10.0",
 ]
 
