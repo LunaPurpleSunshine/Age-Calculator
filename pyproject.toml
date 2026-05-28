@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
@@ -8,14 +8,14 @@ dynamic = ["version"]
 description = "A tiny CLI that calculates an age and next birthday from a birth date."
 readme = "README.md"
 requires-python = ">=3.12"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENCE.txt"]
 authors = [{ name = "LunaPurpleSunshine" }]
 keywords = ["age", "birthday", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -54,7 +54,7 @@ path = "src/agecalc/__init__.py"
 packages = ["src/agecalc"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/agecalc", "tests", "README.md", "pyproject.toml"]
+include = ["src/agecalc", "tests", "README.md", "LICENCE.txt", "pyproject.toml"]
 
 [tool.ruff]
 line-length = 100

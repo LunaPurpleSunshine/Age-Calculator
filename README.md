@@ -128,4 +128,4 @@ CI runs the same checks across Python 3.12, 3.13, and 3.14 on every push and pul
 
 ## Licence
 
-Released under the MIT licence.
+Released under the MIT licence — see [LICENCE.txt](LICENCE.txt) for the full text.
