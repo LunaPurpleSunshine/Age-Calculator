@@ -1,4 +1,4 @@
-# age-calculator
+# pyagecalc
 
 A small command-line tool that calculates someone's age and tells you when their next birthday falls.
 
@@ -10,24 +10,24 @@ Will turn 31 on next birthday 2025-07-01
 
 ## Install
 
-The package is published as **`age-calculator`** on PyPI and exposes the **`agecalc`** command.
+The package is published as **`pyagecalc`** on PyPI and exposes the **`agecalc`** command.
 
 Using [uv](https://docs.astral.sh/uv/) (recommended):
 
 ```bash
-uv tool install age-calculator
+uv tool install pyagecalc
 ```
 
 Run without installing:
 
 ```bash
-uvx age-calculator 1994 07 01
+uvx --from pyagecalc agecalc 1994 07 01
 ```
 
 Or with pipx:
 
 ```bash
-pipx install age-calculator
+pipx install pyagecalc
 ```
 
 You can also run the module form once the package is on your `PYTHONPATH`:

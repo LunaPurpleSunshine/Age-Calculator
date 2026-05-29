@@ -3,14 +3,14 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "age-calculator"
+name = "pyagecalc"
 dynamic = ["version"]
 description = "A tiny CLI that calculates an age and next birthday from a birth date."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENCE.txt"]
-authors = [{ name = "LunaPurpleSunshine" }]
+authors = [{ name = "LunaPurpleSunshine", email = "python@forge.purplesunshine.net" }]
 keywords = ["age", "birthday", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
