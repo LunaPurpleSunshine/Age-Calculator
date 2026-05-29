@@ -18,7 +18,7 @@ Programmatic use:
 
 from agecalc.core import calculate_age, calculate_next_birthday, expand_year
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 __all__ = [
     "__version__",
