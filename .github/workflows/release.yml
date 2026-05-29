@@ -1,0 +1,124 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Publish target"
+        required: true
+        default: "testpypi"
+        type: choice
+        options:
+          - testpypi
+          - both
+
+jobs:
+  test:
+    name: test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Sync dependencies
+        run: uv sync --all-groups --python ${{ matrix.python-version }}
+
+      - name: Lint (ruff check)
+        run: uv run --python ${{ matrix.python-version }} ruff check .
+
+      - name: Format check (ruff format)
+        run: uv run --python ${{ matrix.python-version }} ruff format --check .
+
+      - name: Type check (mypy)
+        run: uv run --python ${{ matrix.python-version }} mypy
+
+      - name: Run tests with coverage
+        run: >-
+          uv run --python ${{ matrix.python-version }}
+          pytest --cov=agecalc --cov-report=term-missing --cov-report=xml
+
+  build:
+    name: build distribution
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install Python 3.13
+        run: uv python install 3.13
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      - name: Verify package metadata
+        run: uv run --with twine twine check dist/*
+
+      - name: Upload built distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-testpypi:
+    name: publish → test.pypi.org
+    needs: build
+    runs-on: ubuntu-latest
+    environment: test-pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download built distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Publish to test.pypi.org
+        run: >-
+          uv publish
+          --publish-url https://test.pypi.org/legacy/
+          --trusted-publishing always
+
+  publish-pypi:
+    name: publish → pypi.org
+    needs: publish-testpypi
+    # Only run on real version tags, not manual dispatch
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download built distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Publish to pypi.org
+        run: uv publish --trusted-publishing always
