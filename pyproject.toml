@@ -3,7 +3,7 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "age-calculator"
+name = "pyagecalc"
 dynamic = ["version"]
 description = "A tiny CLI that calculates an age and next birthday from a birth date."
 readme = "README.md"
