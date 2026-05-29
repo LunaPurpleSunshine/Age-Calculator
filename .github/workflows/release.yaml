@@ -2,6 +2,7 @@ name: Release
 
 on:
   push:
+    branches: [master, main]
     tags:
       - "v*.*.*"
   workflow_dispatch:
@@ -66,6 +67,23 @@ jobs:
       - name: Install Python 3.13
         run: uv python install 3.13
 
+      - name: Append .devN suffix for non-release builds
+        if: "!startsWith(github.ref, 'refs/tags/v')"
+        run: |
+          python - <<'EOF'
+          import os, pathlib, re
+
+          path = pathlib.Path("src/agecalc/__init__.py")
+          run_number = os.environ["GITHUB_RUN_NUMBER"]
+          text = path.read_text()
+          text = re.sub(
+              r'(__version__ = ")([^"]+)(")',
+              lambda m: f'{m.group(1)}{m.group(2)}.dev{run_number}{m.group(3)}',
+              text,
+          )
+          path.write_text(text)
+          EOF
+
       - name: Build sdist and wheel
         run: uv build
 
@@ -81,6 +99,9 @@ jobs:
   publish-testpypi:
     name: publish → test.pypi.org
     needs: build
+    # Runs for manual dispatch and master-branch pushes; NOT for release tags
+    # (on release tags, publish-pypi runs directly from the build artifact)
+    if: "!startsWith(github.ref, 'refs/tags/v')"
     runs-on: ubuntu-latest
     environment: test-pypi
     permissions:
@@ -105,8 +126,8 @@ jobs:
 
   publish-pypi:
     name: publish → pypi.org
-    needs: publish-testpypi
-    # Only run on real version tags, not manual dispatch
+    needs: build
+    # Only run on release tags
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment: pypi
