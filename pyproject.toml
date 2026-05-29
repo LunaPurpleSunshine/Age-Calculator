@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENCE.txt"]
-authors = [{ name = "LunaPurpleSunshine" }]
+authors = [{ name = "LunaPurpleSunshine", email = "python@forge.purplesunshine.net" }]
 keywords = ["age", "birthday", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
