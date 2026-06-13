@@ -16,9 +16,8 @@ Programmatic use:
 30
 """
 
-from agecalc.core import calculate_age, calculate_next_birthday, expand_year
-
 from agecalc._version import __version__
+from agecalc.core import calculate_age, calculate_next_birthday, expand_year
 
 __all__ = [
     "__version__",
