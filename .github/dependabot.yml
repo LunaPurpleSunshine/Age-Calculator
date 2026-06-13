@@ -3,7 +3,9 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    cooldown:
+      default-days: 90
     groups:
       actions:
         patterns:
@@ -12,7 +14,9 @@ updates:
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    cooldown:
+      default-days: 90
     groups:
       python-dev:
         dependency-type: "development"
